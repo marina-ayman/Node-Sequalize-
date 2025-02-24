@@ -9,12 +9,12 @@ const opts = {
   secretOrKey: process.env.SECRET_KEY,
 };
 // jwtFromRequest -> how & when extract token
-
 module.exports = (passport) => {
   passport.use(
     new JwtStrategy(opts, async (jwt_payload, done) => {  // error
+
       try {
-        const user = await User.findByPk(jwt_payload.id);
+        const user = await User.findByPk(jwt_payload.user.id);
         if (user) {
           return done(null, user);
         }
