@@ -96,34 +96,5 @@ const refreshUserToken = async (req, res) => {
   }
 };
 
-const refreshAdminToken = async (req, res) => {
-  const { refreshToken } = req.body;
-  if (!refreshToken) {
-    return res.status(403).json({ message: "Admin refresh token is required" });
-  }
-  const storedToken = await RefreshToken.findOne({ where: { token: refreshToken } });
-  if (!storedToken) {
-    return res.status(403).json({ message: "Invalid admin refresh token" });
-  }
-  try {
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
-    const user = await User.findByPk(decoded.id);
-    if (!user || user.isAdmin !== 1) {  
-      return res.status(403).json({ message: "Admin user not found" });
-    }
-    const newTokens = await generateTokens(user);
-      await RefreshToken.destroy({ where: { token: refreshToken } });
-      await RefreshToken.create({
-        token: newTokens.refreshToken,
-        userId: user.id,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    });
 
-    res.json(newTokens);
-  } catch (error) {
-    res.status(403).json({ message: "Invalid admin refresh token" });
-  }
-};
-
-
-module.exports = { loginUser, refreshUserToken, refreshAdminToken }
+module.exports = { loginUser, refreshUserToken }

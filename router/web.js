@@ -2,7 +2,7 @@ const express= require('express')
 const passport = require('passport')
 const router= express.Router()
 const { registerUser }= require('../controller/auth/registerController.js') 
-const { loginUser, refreshUserToken, refreshAdminToken }= require('../controller/auth/loginController.js') 
+const { loginUser, refreshUserToken }= require('../controller/auth/loginController.js') 
 const validateRequest = require('./../middlewares/validateRequest.js')
 const { todoSchema } = require('./../validations/todoValidate.js')
 const { userSchema } = require('./../validations/userValidate.js')
@@ -13,7 +13,6 @@ const { addTodo, getTodos, deleteTodo, updateTodo, updateStatus }= require('../c
 router.post('/register', validateRequest(userSchema), registerUser)
 router.post('/login', loginUser)
 router.post("/refresh-token", refreshUserToken);
-router.post("/admin-refresh-token", refreshAdminToken)
 
 
 // user

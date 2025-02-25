@@ -20,17 +20,21 @@ const todoSchema = Joi.object({
   //   "any.required": "Status is required",
   // }),
 
-  fromDate: Joi.date().greater("now").required().messages({
+  fromDate: Joi.date().required().messages({
+    // greater("now")
     "date.base": "From Date must be a valid date",
-    "date.greater": "From Date must be today or after",
+    // "date.greater": "From Date must be today or after",
     "any.required": "From Date is required",
   }),
 
-  toDate: Joi.date().greater(Joi.ref("fromDate")).required().messages({
+  toDate: Joi.date().required().messages({
+    // .greater(Joi.ref("fromDate"))
     "date.base": "To Date must be a valid date",
-    "date.greater": "To Date must be after From Date",
+    // "date.greater": "To Date must be after From Date",
     "any.required": "To Date is required",
   }),
+  userId: Joi.number().integer(),
+
 })
 
 // const validateTodo = async (req, res, next) => {

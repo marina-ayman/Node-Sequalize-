@@ -82,6 +82,22 @@ Todo.init(
         key: 'id'
       }
     },
+    createdBy: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Users', 
+        key: 'id'
+      }
+    },
+    updatedBy: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Users', 
+        key: 'id'
+      }
+    },
   },
   { 
     sequelize,

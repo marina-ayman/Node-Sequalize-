@@ -46,7 +46,8 @@ const addTodo = async (req, res, next) => {
       status,
       fromDate,
       toDate,
-      userId: loginId
+      userId: loginId,
+      createdBy: loginId
     };
 
     const newTodo = await Todo.create(todoUpdate);
@@ -77,7 +78,7 @@ const updateTodo = async (req, res, next) => {
       status: status,
       fromDate: fromDate,
       toDate: toDate,
-
+      updatedBy: loginId
     };
     if (todo.userId  === loginId ) {
       const [updatedTodo] = await Todo.update(todoNew, {
