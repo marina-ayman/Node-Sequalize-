@@ -1,21 +1,31 @@
-const  Acl  = require('acl');
-const AclSequelizeBackend = require('acl-sequelize');
-const sequelize = require('./database'); 
+const Acl = require("acl");
+const { Sequelize } = require("sequelize");
+const sequelize = require("./database");
+const AclSequelizeBackend = require("acl-sequelize");
+const acl = new Acl(new AclSequelizeBackend(sequelize, { prefix: "acl_" }));
+async function setupACL() {
+  try {
+    // await sequelize.sync({ alter: true }); 
+    console.log("✅ ACL tables recreated successfully!");
+    await acl.allow([
+      {
+        roles: "admin",
+        allows: [
+          { resources: ["/users", "/admin"], permissions: ["get", "post", "delete"] },
+        ],
+      },
+      {
+        roles: "user",
+        allows: [{ resources: ["/profile"], permissions: ["get", "put"] }],
+      },
+    ]);
 
-// store permission 
-const acl = new Acl(new AclSequelizeBackend(sequelize, { prefix: 'acl_' }));
+    console.log("✅ACL Rules Set Successfully");
+  } catch (error) {
+    console.error("❌Error setting up ACL:", error);
+  }
+}
 
-(async () => {
-    // make sure table existes
-  await sequelize.sync(); 
-
-
-  // Roles and Permissions
-  await acl.allow('admin', '*', '*'); 
-  await acl.allow('editor', 'todos', ['create', 'edit', 'delete']);
-  await acl.allow('user', 'todos', ['view']);
-
-  console.log(" Roles and Permissions Set");
-})();
+setupACL();
 
 module.exports = acl;

@@ -1,15 +1,11 @@
-const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const { Model, DataTypes } = require("sequelize");
+
+
 const User = require('./User'); 
 
 class Todo extends Model {
-    static associate(models) {
-      Todo.belongsTo(models.User, {
-        foreignKey: "userId",
-        onDelete: "CASCADE", 
-        onUpdate: "CASCADE",
-      });
-    }
+    
   }
 
 
@@ -31,7 +27,7 @@ Todo.init(
       allowNull: false,
     },
     status: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       defaultValue: 0,
       validate: {
@@ -75,26 +71,25 @@ Todo.init(
       },
     },
     userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+      type: DataTypes.INTEGER.UNSIGNED,
       references: {
         model: 'Users', 
         key: 'id'
       }
     },
     createdBy: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
-        model: 'Users', 
+        model: 'users', 
         key: 'id'
       }
     },
     updatedBy: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: true,
       references: {
-        model: 'Users', 
+        model: 'users', 
         key: 'id'
       }
     },

@@ -1,8 +1,10 @@
-const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const { Model, DataTypes } = require("sequelize");
+
+
 const bcrypt = require("bcrypt");
 const Todo = require("./Todo");
-
+const Role = require("./Role")
 class User extends Model {
   async verifyPassword(password) {
     return bcrypt.compare(password, this.password);
@@ -11,17 +13,16 @@ class User extends Model {
   getFullName() {
     return `${this.firstName} ${this.lastName}`;
   }
-  static associate(models) {
-    User.hasMany(models.Todo, {
-      foreignKey: "userId",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    });
-  }
+
 }
 
 User.init(
   {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED, 
+      primaryKey: true,
+      autoIncrement: true
+    },
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -54,7 +55,7 @@ User.init(
       allowNull: false,
     },
     age: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       validation: {
         isAdult(value) {
@@ -65,16 +66,31 @@ User.init(
       },
     },
     isAdmin: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       defaultValue: 0,
-    }
-  },
+    },
+role_id: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    defaultValue: 17,
+    references: {
+      model: 'acl_roles', // Name of the target table
+      key: 'id',          // Key in the target table
+    },
+    onUpdate: "CASCADE",
+    onDelete: "RESTRICT",
+  },},
   {
     sequelize,
     modelName: "User",
     tableName: "users",
     timestamps: true,
+    indexes: [ 
+      {
+        unique: true,
+        fields: ["email"],
+      },
+    ],
     hooks: {
       beforeCreate: async (user) => {
         if (user.password) {
@@ -90,14 +106,6 @@ User.init(
       },
     },
   },
-  {
-    indexes: [
-      {
-        unique: true,
-        fields: ["email"],
-      },
-    ],
-  }
 );
 
 // User.hasMany(Todo, { foreignKey: 'userId' });

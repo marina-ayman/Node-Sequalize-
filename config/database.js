@@ -15,12 +15,12 @@ sequelize
   .then(() => console.log("✅ Database Connected Successfully"))
   .catch((err) => console.error("❌ Unable to connect to the database:", err));
 
+  // sequelize.sync({ alter: true })
 process.on("SIGINT", async () => {
   console.log("Shutting down gracefully...");
   await sequelize.close();
   process.exit(0);
 });
 
-sequelize.sync({ alter: true })
 
 module.exports = sequelize;

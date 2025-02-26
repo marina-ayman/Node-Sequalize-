@@ -1,32 +1,45 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database")
+const sequelize = require("../config/database");
+
+const User = require("./User");
+const Todo = require("./Todo");
+const Role = require("./Role");
+const Resource = require("./Resource");
+const Permission = require("./Permission");
+const RoleParent = require("./RoleParent");
+const RefreshToken = require("./RefreshToken")
 
 
-const User = require('./User')
-const Todo = require('./Todo')
-const RefreshToken = require("./RefreshToken")(sequelize, DataTypes)
+User.hasMany(Todo, { foreignKey: "userId", as: "Tasks" });
+Todo.belongsTo(User, { foreignKey: "userId", as: "User" });
 
+User.hasMany(Todo, { foreignKey: "createdBy", as: "CreatedTasks" });
+Todo.belongsTo(User, { foreignKey: "createdBy", as: "CreatedByUser" });
 
-// User.hasMany(Todo, { foreignKey: 'userId' })
-// Todo.belongsTo(User, { foreignKey: 'userId' })
+User.hasMany(RefreshToken, { foreignKey: "userId" });
+RefreshToken.belongsTo(User, { foreignKey: "userId" });
 
-// User.hasMany(Todo, { foreignKey: 'createdBy' })
-// Todo.belongsTo(User, { foreignKey: 'createdBy' })
+Role.belongsToMany(Resource, { through: Permission, foreignKey: "role_id" });
+Resource.belongsToMany(Role, { through: Permission, foreignKey: "resource_id" });
 
-User.hasMany(Todo, { foreignKey: 'userId', as: 'Tasks' });
-Todo.belongsTo(User, { foreignKey: 'userId', as: 'User' }); 
+Role.belongsToMany(Role, { through: RoleParent, as: "Children", foreignKey: "role_id", otherKey: "parent_id" });
+Role.belongsToMany(Role, { through: RoleParent, as: "Parents", foreignKey: "parent_id", otherKey: "role_id" });
 
-User.hasMany(Todo, { foreignKey: 'createdBy', as: 'CreatedTasks' });
-Todo.belongsTo(User, { foreignKey: 'createdBy', as: 'CreatedByUser' });
+User.belongsTo(Role, { foreignKey: "role_id", as: "role" });
 
-User.hasMany(RefreshToken, { foreignKey: "userId" })
-RefreshToken.belongsTo(User, { foreignKey: "userId" })
+Resource.belongsTo(Resource, { as: "parent", foreignKey: "parent_id", onDelete: "CASCADE", onUpdate: "CASCADE" });
 
-
+// sequelize.sync({ alter: true })
+//   .then(() => console.log("Database synced successfully!"))
+//   .catch(err => console.error("Error syncing database:", err));
 
 module.exports = {
-    sequelize,
-    User,
-    Todo,
-    RefreshToken,
-  };
+  sequelize,
+  User,
+  Todo,
+  RefreshToken,
+  Role,
+  Resource,
+  Permission,
+  RoleParent,
+};

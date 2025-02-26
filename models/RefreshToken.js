@@ -1,29 +1,40 @@
-const { Model, DataTypes } = require("sequelize");
+const { Model, DataTypes } = require("sequelize"); 
 const sequelize = require("../config/database");
+
 const User = require('./User'); 
 
-module.exports = (sequelize, DataTypes) => {
-    const RefreshToken = sequelize.define("RefreshToken", {
+class RefreshToken extends Model {}
+
+
+RefreshToken.init({
       token: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       userId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
+        references: {
+          model: "users", 
+          key: "id", 
+        },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       expiresAt: {
         type: DataTypes.DATE,
         allowNull: false,
       },
-    });
-  
-    RefreshToken.associate = (models) => {
-      RefreshToken.belongsTo(models.User, { foreignKey: "userId" });
-    };
-  
-    return RefreshToken;
-  };
+    },
+    {
+      sequelize,
+      modelName: "RefreshToken",
+      tableName: "refresh_tokens",
+      timestamps: false,
+    }
+  )
+  module.exports = RefreshToken;
+
 
 //   npx sequelize-cli db:migrate
 

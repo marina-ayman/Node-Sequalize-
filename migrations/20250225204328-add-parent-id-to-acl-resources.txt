@@ -1,0 +1,21 @@
+'use strict';
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  up: async (queryInterface, Sequelize) => {
+    return queryInterface.addColumn("acl_resources", "parent_id", {
+      type: Sequelize.INTEGER,
+      allowNull: true,
+      references: {
+        model: "acl_resources",
+        key: "id",
+      },
+      onUpdate: "CASCADE",
+      onDelete: "SET NULL",
+    });
+  },
+
+  down: async (queryInterface, Sequelize) => {
+    return queryInterface.removeColumn("acl_resources", "parent_id");
+  }
+};

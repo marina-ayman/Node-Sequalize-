@@ -40,7 +40,11 @@ app.use((req,res , next)=>{
 app.use("/web", webRouter)
 app.use("/admin", adminRouter)
 
-
+// sequelize.sync({ alter: true }) 
+//   .then(() => {
+//     console.log('Database & tables created!');
+//   })
+//   .catch(err => console.error('Error syncing database:', err));
 
 // Global Error Handler
 app.use(errorHandler)
