@@ -30,6 +30,20 @@ Permission.init(
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     },
+    role_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      references: {
+        model: "acl_roles",
+        key: "id",        
+      },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    },
+    permissions: {
+      type: DataTypes.JSON,
+      allowNull: false,
+    },
   },
   {
     sequelize,

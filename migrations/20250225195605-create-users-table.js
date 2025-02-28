@@ -1,11 +1,10 @@
 'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("users", {
+    await queryInterface.createTable('users', {
       id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
@@ -36,30 +35,29 @@ module.exports = {
         defaultValue: 0,
       },
       role_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        defaultValue: 1,
+        type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
-          model: "acl_roles", 
-          key: "id",
+          model: 'acl_roles', 
+          key: 'id',
         },
-        onUpdate: "CASCADE",
-        onDelete: "RESTRICT",
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
       },
-      // name: 'users_ibfk_1',
     });
   },
-  down: async (queryInterface, Sequelize) => {
-    // await queryInterface.removeConstraint('users', 'users_ibfk_1', { ifExists: true });
-    await queryInterface.dropTable("users");
 
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('users');
   },
 };
-

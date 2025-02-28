@@ -6,7 +6,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("refresh_tokens", {
       id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
@@ -15,7 +15,7 @@ module.exports = {
         allowNull: false,
       },
       userId: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: "users", 

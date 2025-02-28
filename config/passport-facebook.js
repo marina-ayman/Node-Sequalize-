@@ -1,5 +1,5 @@
 const FacebookStrategy = require('passport-facebook').Strategy;
-const User = require('../models/User'); // نموذج المستخدم
+const User = require('../models/User');
 require('dotenv').config();
 
 module.exports = (passport) => {

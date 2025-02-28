@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const CustomError = require('../../../handler/customError')
 require("dotenv").config()
-const { User, RefreshToken } = require("../../../models")
+const { User, RefreshToken, Permission, Role, Resource } = require("../../../models")
 
 const generateTokens = async (user) => {
   const accessToken = jwt.sign(
@@ -45,12 +45,43 @@ const loginUser = async (req, res, next) => {
   if(!isMatch) {
     throw new CustomError("Wrong Email or Password", 401)
   }
+  const roleWithPermissions = await Role.findOne({
+    where: { id: userExists.role_id },
+    include: {
+      model: Resource,
+       as: 'resources',
+      through: { attributes: ['permissions'] }, 
+    },
+  });
+
+
+  const userPermissions = roleWithPermissions.resources
+  .map((p) => JSON.parse(p.Permission?.permissions || '[]')) 
+  .flat();
+
+  // if (roleWithPermissions) {
+  //   roleWithPermissions.resources.forEach((resource) => {
+  //     console.log(`____________Resource ID: ${resource.id}, ___Permissions: ${resource.Permission.permissions}`);
+  //   });
+  // }
+
+  const tokenData = {
+    id: userExists.id,
+    firstName: userExists.firstName,
+    lastName: userExists.lastName,
+    email: userExists.email,
+    age: userExists.age,
+    isAdmin: userExists.isAdmin,
+    role_id: userExists.role_id,
+    permissions: userPermissions,
+  }
+
   // const token = jwt.sign(userExists.get({ plain: true }), process.env.SECRET_KEY , { expiresIn: '48h' });
-  const token = await generateTokens(userExists);
+  const token = await generateTokens(tokenData);
 
   res.status(200).json({
     message: "User log in successfully",
-    user: userExists,
+    user: tokenData,
     token: token
   })
 } catch (err) {

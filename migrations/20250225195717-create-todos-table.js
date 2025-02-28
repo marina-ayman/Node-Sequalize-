@@ -4,7 +4,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("todos", {
       id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
@@ -30,7 +30,7 @@ module.exports = {
         allowNull: false,
       },
       userId: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: "users",
@@ -40,7 +40,7 @@ module.exports = {
         onDelete: "CASCADE",
       },
       createdBy: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: "users",
@@ -50,7 +50,7 @@ module.exports = {
         onDelete: "CASCADE",
       },
       updatedBy: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.INTEGER,
         allowNull: true,
         references: {
           model: "users",

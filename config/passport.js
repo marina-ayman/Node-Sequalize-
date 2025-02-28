@@ -16,7 +16,7 @@ module.exports = (passport) => {
       try {
         const user = await User.findByPk(jwt_payload.user.id);
         if (user) {
-          return done(null, user);
+          return done(null, jwt_payload.user);
         }
         return done(null, false);
       } catch (err) {

@@ -1,14 +1,12 @@
 'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("acl_resources", {
+    await queryInterface.createTable('acl_resources', {
       id: {
-        type: Sequelize.INTEGER.UNSIGNED, // غير النوع إلى UNSIGNED
-        autoIncrement: true,
+        type: Sequelize.INTEGER,
         primaryKey: true,
-        allowNull: false,
+        autoIncrement: true,
       },
       key: {
         type: Sequelize.STRING,
@@ -20,14 +18,8 @@ module.exports = {
         allowNull: false,
       },
       parent_id: {
-        type: Sequelize.INTEGER.UNSIGNED, // غير النوع إلى UNSIGNED
+        type: Sequelize.INTEGER,
         allowNull: true,
-        references: {
-          model: "acl_resources",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
       meta: {
         type: Sequelize.JSON,
@@ -36,17 +28,17 @@ module.exports = {
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.fn("NOW"),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.fn("NOW"),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
       },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("acl_resources");
+    await queryInterface.dropTable('acl_resources');
   },
 };

@@ -1,41 +1,21 @@
-const { Permission, Resource, Role } = require("../models");
+const authorize = (requiredPermissions) => {
+  return (req, res, next) => {
 
-const checkPermission = async (roleKey, resourceKey, action) => {
-  try {
-    // البحث عن الـ Role في ACL
-    const role = await Role.findOne({ where: { key: roleKey } });
-    if (!role) return false;
 
-    // البحث عن الـ Resource في ACL
-    const resource = await Resource.findOne({ where: { key: resourceKey } });
-    if (!resource) return false;
-
-    // التحقق مما إذا كان الدور لديه الإذن المطلوب على المورد
-    const permission = await Permission.findOne({
-      where: { key: `${roleKey}:${resourceKey}` },
-    });
-
-    if (!permission) return false;
-
-    const allowedActions = JSON.parse(permission.value); // تحويل الـ JSON إلى Array
-    return allowedActions.includes(action);
-  } catch (error) {
-    console.error("Error checking ACL:", error);
-    return false;
-  }
-};
-
-const aclMiddleware = (resourceKey, action) => {
-  return async (req, res, next) => {
-    const roleKey = req.user?.role || "user"; // استخرج دور المستخدم
-
-    const hasPermission = await checkPermission(roleKey, resourceKey, action);
-    if (!hasPermission) {
-      return res.status(403).json({ message: "Access Denied" });
+    if (!req.user || !req.user.permissions) {
+      return res.status(403).json({ message: 'Forbidden: No permissions found' });
     }
 
-    next();
+    const hasPermission = requiredPermissions.some((permission) =>
+      req.user.permissions.includes(permission)
+    );
+
+    if (hasPermission) {
+      next(); 
+    } else {
+      res.status(403).json({ message: 'Forbidden: You do not have the required permission' });
+    }
   };
 };
 
-module.exports = aclMiddleware;
+module.exports = authorize;
