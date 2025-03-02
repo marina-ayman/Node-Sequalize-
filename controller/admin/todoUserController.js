@@ -86,8 +86,6 @@ const getUserTodos = async (req, res, next) => {
   }
 }
 
-
-
 const addTodo = async (req, res, next) => {
   try {
     const { title, tags, status, fromDate, toDate, userId } = req.body;

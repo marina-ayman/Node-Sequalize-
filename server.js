@@ -7,6 +7,8 @@ const { sequelizeModels } = require('./models');
 // require("./seeders/insertUser.js")
 const webRouter = require("./router/web.js") 
 const adminRouter = require("./router/admin.js") 
+const aclRouter = require("./router/aclRoutes.js") 
+
 const errorHandler = require("./middlewares/errorHandler")
 const morgan = require('morgan')
 // npm install express sequelize mysql2 dotenv
@@ -39,6 +41,8 @@ app.use((req,res , next)=>{
 
 app.use("/web", webRouter)
 app.use("/admin", adminRouter)
+app.use("/acl", aclRouter)
+
 
 // sequelize.sync({ alter: true }) 
 //   .then(() => {

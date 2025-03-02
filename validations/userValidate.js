@@ -30,6 +30,10 @@ const userSchema = Joi.object({
     "number.max": "Age must not exceed {#limit}",
     "any.required": "Age is required",
   }),
+
+  role_id: Joi.number().integer().messages({
+    "number.integer": "role must be an integer",
+  }),
 })
 
 // const validateUser = async (req, res, next) => {

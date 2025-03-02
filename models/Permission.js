@@ -11,15 +11,6 @@ Permission.init(
       primaryKey: true,
       autoIncrement: true
     },
-    key: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    value: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     resource_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,

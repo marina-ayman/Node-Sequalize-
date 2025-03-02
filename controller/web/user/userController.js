@@ -4,30 +4,6 @@ const Todo = require("../../../models/Todo");
 const sequelize = require("../../../config/database");
 const CustomError = require('../../../handler/customError')
 
-// const getUsers = async (req, res) => {
-//   try {
-//     const users = await User.findAll({
-//       attributes: [
-//         {
-//           exclude: ["password"],
-//         },
-//         [
-//           sequelize.fn("DATE_FORMAT", sequelize.col("fromDate"), "%Y-%m-%d"),
-//           "formattedFromDate",
-//         ],
-//         [
-//           sequelize.fn("DATE_FORMAT", sequelize.col("toDate"), "%Y-%m-%d"),
-//           "formattedToDate",
-//         ],
-//       ],
-//     });
-
-//     return res.status(200).json({ users });
-//   } catch (err) {
-//     res.status(500).json({ error: `Server error: ${err.message}` });
-//   }
-// };
-
 const profile = async (req, res, next) => {
   try {
     const profile = await User.findByPk(req.user.id, {
