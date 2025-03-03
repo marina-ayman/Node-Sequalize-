@@ -88,6 +88,7 @@ const loginUser = async (req, res, next) => {
     user: tokenData,
     token: token,
   })
+  
 } catch (err) {
   next(err); 
 }
@@ -96,17 +97,18 @@ const loginUser = async (req, res, next) => {
 const refreshAdminToken = async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
-    return res.status(403).json({ message: "Admin refresh token is required" });
+    throw new CustomError("Admin refresh token is required", 403)
   }
   const storedToken = await RefreshToken.findOne({ where: { token: refreshToken } });
   if (!storedToken) {
-    return res.status(403).json({ message: "Invalid admin refresh token" });
+    throw new CustomError("Invalid admin refresh token", 403)
+
   }
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
     const user = await User.findByPk(decoded.id);
     if (!user || user.isAdmin !== 1) {  
-      return res.status(403).json({ message: "Admin user not found" });
+      throw new CustomError("Admin user not found", 403)
     }
     const newTokens = await generateTokens(user);
       await RefreshToken.destroy({ where: { token: refreshToken } });
@@ -116,9 +118,9 @@ const refreshAdminToken = async (req, res) => {
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
-    res.json(newTokens);
+   return res.json(newTokens);
   } catch (error) {
-    res.status(403).json({ message: "Invalid admin refresh token" });
+    throw new CustomError("Invalid admin refresh token", 403)
   }
 };
 

@@ -29,7 +29,7 @@ User.init(
       validate: {
         len: {
           args: [5, 20],
-          msg: "Name must be more than 5 and less than 20",
+          message: "Name must be more than 5 and less than 20",
         },
       },
     },
@@ -39,7 +39,7 @@ User.init(
       validate: {
         len: {
           args: [5, 20],
-          msg: "Name must be more than 5 and less than 20",
+          message: "Name must be more than 5 and less than 20",
         },
       },
     },

@@ -1,4 +1,5 @@
 const { Role, Resource, Permission } = require("../../models");
+const CustomError = require('../../handler/customError')
 
 const createRole = async (req, res) => {
   try {
@@ -31,9 +32,9 @@ const createRole = async (req, res) => {
 
     // const resources = await resources.create({ key, value });
 
-    res.status(201).json("role");
+   return res.status(201).json({role , message: "Role Created Successfully"});
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new CustomError( error.message, 403)
   }
 };
 
@@ -43,7 +44,7 @@ const updateRole = async (req, res) => {
     const { key, value } = req.body.role;
     const role = await Role.findByPk(id);
     if (!role) {
-      return res.status(404).json({ message: "Role not found" });
+      throw new CustomError("Role not found", 403)
     }
     const roleUpdate = {
       key: key,
@@ -62,9 +63,9 @@ const updateRole = async (req, res) => {
         where: { resource_id: id, role_id: role.id },
       });
     }
-    res.json(role);
+   return res.status(201).json({role , message: "Role updated Successfully"});
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new CustomError( error.message, 403)
   }
 };
 
@@ -73,24 +74,25 @@ const deleteRole = async (req, res) => {
     const { id } = req.params;
     const role = await Role.findByPk(id);
     if (!role) {
-      return res.status(404).json({ message: "Role not found" });
+      throw new CustomError("Role not found", 403)
+
     }
     await Permission.destroy({ where: { role_id: id } });
 
     await role.destroy();
 
-    res.json({ message: "Role deleted successfully" });
+   return res.json({ message: "Role deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new CustomError( error.message, 403)
   }
 };
 
 const getAllRoles = async (req, res) => {
   try {
     const roles = await Role.findAll();
-    res.json(roles);
+    return res.json(roles);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new CustomError( error.message, 403)
   }
 };
 
@@ -112,7 +114,7 @@ const getRoleById = async (req, res) => {
     });
 
     if (!role) {
-      return res.status(404).json({ message: "Role not found" });
+      throw new CustomError("Role not found", 403)
     }
 
     let resources = role.resources.map((resource) => {
@@ -147,9 +149,9 @@ const getRoleById = async (req, res) => {
       resources: resources,
     };
 
-    res.json({ data: data });
+   return res.json({ data: data });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new CustomError(error.message, 403)
   }
 };
 
@@ -176,9 +178,10 @@ const getResourcesData = async (req, res) => {
 
     console.log(formattedResources);
 
-    res.json({ resources: formattedResources });
+   return res.json({ resources: formattedResources });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new CustomError(error.message, 403)
+
   }
 };
 

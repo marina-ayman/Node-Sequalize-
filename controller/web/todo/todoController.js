@@ -37,7 +37,7 @@ const addTodo = async (req, res, next) => {
     const loginId = req.user.id;
 
     if (!title || !tags || !fromDate || !toDate) {
-      return res.status(400).json({ msg: "All fields are required" });
+      throw new CustomError("All fields are required" , 403)
     }
 
     const todoUpdate = {
@@ -53,10 +53,10 @@ const addTodo = async (req, res, next) => {
     const newTodo = await Todo.create(todoUpdate);
 
     if (!newTodo) {
-      return res.status(500).json({ msg: "Failed to add todo" });
+      throw new CustomError("Failed to add todo" , 403)
     }
 
-    return res.status(200).json({ msg: "Added Successfully", todo: newTodo });
+    return res.status(200).json({ message: "Added Successfully", todo: newTodo });
   } catch (err) {
     next(err);
   }
@@ -87,7 +87,7 @@ const updateTodo = async (req, res, next) => {
 
       return res
         .status(200)
-        .json({ msg: "Updated Sucessfuly", todo: updatedTodo });
+        .json({ message: "Updated Sucessfuly", todo: updatedTodo });
     } else {
       throw new CustomError("you can`t edit it", 404)
     }
@@ -109,7 +109,7 @@ const deleteTodo = async (req, res, next) => {
     }
     if (todo.userId  === loginId ) {
       await todo.destroy();
-      return res.status(200).json({ msg: "Deleted Sucessfuly" });
+      return res.status(200).json({ message: "Deleted Sucessfuly" });
     } else {
       throw new CustomError("you can`t edit it", 404)
     }
@@ -131,7 +131,7 @@ const updateStatus = async (req, res, next) => {
     }
     if (user.id  === loginId ) {
       await user.update({ status: status }, { fields: ['status'] });
-      return res.status(200).json({ msg: "Deleted Sucessfuly" });
+      return res.status(200).json({ message: "Deleted Sucessfuly" });
     } else {
       throw new CustomError("you can`t edit it", 404)
     }

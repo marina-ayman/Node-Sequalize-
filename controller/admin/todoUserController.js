@@ -92,7 +92,7 @@ const addTodo = async (req, res, next) => {
     const { title, tags, status, fromDate, toDate, userId } = req.body;
     const loginId = req.user.id;
     if (!title || !tags || !fromDate || !toDate || !userId) {
-      return res.status(400).json({ msg: "All fields are required" });
+      throw new CustomError("All fields are required" , 403)
     }
     const todoUpdate = {
       title,
@@ -107,10 +107,10 @@ const addTodo = async (req, res, next) => {
     const newTodo = await Todo.create(todoUpdate);
 
     if (!newTodo) {
-      return res.status(500).json({ msg: "Failed to add todo" });
+      throw new CustomError("Failed to add todo" , 403)
     }
 
-    return res.status(200).json({ msg: "Added Successfully", todo: newTodo });
+    return res.status(200).json({ message: "Added Successfully", todo: newTodo });
   } catch (err) {
     next(err);
   }
@@ -142,7 +142,7 @@ const updateTodo = async (req, res, next) => {
 
       return res
         .status(200)
-        .json({ msg: "Updated Sucessfuly", todo: updatedTodo });
+        .json({ message: "Updated Sucessfuly", todo: updatedTodo });
  
   } catch (err) {
     next(err);
@@ -161,7 +161,7 @@ const deleteTodo = async (req, res, next) => {
       throw new CustomError("unathenticated", 404)
     } 
       await todo.destroy();
-      return res.status(200).json({ msg: "Deleted Sucessfuly" });
+      return res.status(200).json({ message: "Deleted Successfully" });
   
   } catch (err) {
     next(err)

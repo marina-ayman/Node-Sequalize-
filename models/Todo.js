@@ -18,7 +18,7 @@ Todo.init(
         isAlphanumeric: true,
         len: {
           args: [5, 20],
-          msg: "title must be more than 5 and less than 20",
+          message: "title must be more than 5 and less than 20",
         },
       },
     },
@@ -33,7 +33,7 @@ Todo.init(
       validate: {
         isIn: {
           args: [[0, 1, 2]], // 0 toDo.. 1 onProgress.. 2 Done
-          msg: "status Error",
+          message: "status Error",
         },
       },
     },

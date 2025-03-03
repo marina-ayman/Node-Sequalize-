@@ -1,3 +1,5 @@
+
+
 const authorize = (requiredPermissions) => {
   return (req, res, next) => {
 
@@ -11,7 +13,11 @@ const authorize = (requiredPermissions) => {
     if (hasPermission) {
       next(); 
     } else {
-      res.status(403).json({ message: 'Forbidden: You do not have the required permission' });
+      res.json({
+        error: true,
+        statusCode: 403,
+        message: 'Forbidden: You do not have the required permission',
+    })
     }
   };
 };

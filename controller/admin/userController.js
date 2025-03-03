@@ -32,8 +32,8 @@ const addUser = async (req, res, next) => {
       age,
       role_id,
     });
-    res.status(201).json({
-      message: "User registered successfully",
+    return res.status(201).json({
+      message: "User Added successfully",
       user: newUser,
     });
   } catch (err) {
@@ -59,9 +59,9 @@ const updateUser = async (req, res, next) => {
       role_id: role_id,
     }
       const updatedUser = await user.update(userUpdate);
-      res
+     return res
         .status(200)
-        .json({ msg: "user was edited successfully ", user: updatedUser });
+        .json({ message: "user was edited successfully ", user: updatedUser });
 
   } catch (err) {
     next(err);
@@ -79,7 +79,7 @@ const deleteUser = async (req, res, next) => {
     await Todo.destroy({ where: { userId: loginId } });
 
     await user.destroy();
-    return res.status(200).json({ msg: "delete Sucessfuly" });
+    return res.status(200).json({ message: "delete Successfully" });
   } catch (err) {
     next(err);
   }

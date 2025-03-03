@@ -37,7 +37,7 @@ const updateUser = async (req, res, next) => {
       const updatedUser = await user.update(userUpdate);
       res
         .status(200)
-        .json({ msg: "user was edited successfully ", user: updatedUser });
+        .json({ message: "user was edited successfully ", user: updatedUser });
     } else {
       throw new CustomError("You can't edit this user", 403)
     }
@@ -60,7 +60,7 @@ const deleteUser = async (req, res, next) => {
       await Todo.destroy({ where: { userId: loginId } });
 
       await user.destroy();
-      return res.status(200).json({ msg: "delete Sucessfuly" });
+      return res.status(200).json({ message: "delete Sucessfuly" });
     } else {
       throw new CustomError("you can`t delete it", 404)
     }
