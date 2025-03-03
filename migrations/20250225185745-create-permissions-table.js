@@ -32,20 +32,20 @@ module.exports = {
         type: Sequelize.JSON,
         allowNull: false,
       },
-      // createdAt: {
-      //   type: Sequelize.DATE,
-      //   allowNull: false,
-      //   defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-      // },
-      // updatedAt: {
-      //   type: Sequelize.DATE,
-      //   allowNull: false,
-      //   defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
-      // },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
+      },
     });
 
     // *********  add complex index To prevent repeated permission for same role & resourses
-    // await queryInterface.addIndex('acl_permissions', ['role_id', 'resource_id'], {
+    // await queryInterface.addIndex('acl_permissions', ['role_id', 'resource_id', 'permissions'], {
     //   unique: true,
     //   name: 'unique_role_resource',
     // });

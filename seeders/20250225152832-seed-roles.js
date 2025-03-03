@@ -6,8 +6,6 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert("acl_roles", [
       { key: "admin", value: "Admin Role" },
-      { key: "user", value: "User Role" },
-      { key: "superUser", value: "superUser Role" },
 
     ]
   );

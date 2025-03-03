@@ -76,6 +76,7 @@ const getUserTodos = async (req, res, next) => {
       include: [
         {
           model: User, 
+          as: 'User',
           attributes: ['id', 'firstName', 'lastName'],
         },
       ],

@@ -15,34 +15,34 @@ const { getAllUsers, getAllTodos, getUserTodos ,addTodo, deleteTodo, updateTodo 
 router.post('/login', loginUser)
 router.post("/admin-refresh-token", refreshAdminToken)
 
-
 // user
-router.post('/user', passport.authenticate('jwt', { session: false }), addUser)
+router.post('/user', passport.authenticate('jwt', { session: false }), authorize(["create_user"]),  addUser)
 router.get('/profile', passport.authenticate('jwt', { session: false }), profile)
-router.delete('/user/:id', passport.authenticate('jwt', { session: false }), deleteUser)
-router.patch('/user/:id',passport.authenticate('jwt', { session: false }) , validateRequest(userSchema), updateUser)
+router.delete('/user/:id', passport.authenticate('jwt', { session: false }), authorize(["delete_user"]),  deleteUser)
+router.patch('/user/:id',passport.authenticate('jwt', { session: false }) , authorize(["update_user"]),  validateRequest(userSchema), updateUser)
 
 // todo
-router.get('/get_all_users', passport.authenticate('jwt', { session: false }),// authorize(["view_users"]), 
+router.get('/get_all_users', passport.authenticate('jwt', { session: false }), 
 getAllUsers)
-router.get('/get_all_todos', passport.authenticate('jwt', { session: false }), getAllTodos)
+router.get('/get_all_todos', passport.authenticate('jwt', { session: false }), authorize(["view_todos"]), 
+getAllTodos)
 router.get('/get_user_todos/:id', passport.authenticate('jwt', { session: false }),
-// authorize(["admin:view_user_todos","user:view_user_todos"]),
+authorize(["view_user_todos"]),
  getUserTodos)
 
 
 router.post('/todo',
   passport.authenticate('jwt', { session: false }),
-  // authorize(["create_todo"]),
+  authorize(["create_todo"]),
   validateRequest(todoSchema),
   addTodo)
 
 
 router.delete('/todo/:id', passport.authenticate('jwt', { session: false }),
-// authorize(["delete_todo"]),
+authorize(["delete_todo"]),
  deleteTodo)
 router.patch('/todo/:id',passport.authenticate('jwt', { session: false }),
-  // authorize(["update_todo"]), 
+  authorize(["update_todo"]), 
   validateRequest(todoSchema), updateTodo)
 
 

@@ -31,9 +31,3 @@
 
 
 # npx sequelize migration:generate --name add-parent-id-to-acl-resources
-
-
-
-# npx sequelize db:drop
-# npx sequelize db:create
-# npx sequelize db:migrate
