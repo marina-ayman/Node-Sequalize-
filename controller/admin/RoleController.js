@@ -40,26 +40,27 @@ const createRole = async (req, res) => {
 const updateRole = async (req, res) => {
   try {
     const { id } = req.params;
-    const { key, value } = req.body.role
-    const role = await Role.findByPk(id)
+    const { key, value } = req.body.role;
+    const role = await Role.findByPk(id);
     if (!role) {
       return res.status(404).json({ message: "Role not found" });
     }
     const roleUpdate = {
       key: key,
-      value: value
-    }
-     await Role.update(roleUpdate, {
-      where: { id: paramId } 
-    })
-    const resources = req.body.resources
+      value: value,
+    };
+    await Role.update(roleUpdate, {
+      where: { id: paramId },
+    });
+    const resources = req.body.resources;
     const filteredResources = Object.entries(resources).filter(
       ([id, permissions]) => permissions.length > 0
-    )
+    );
 
     for (const [id, permissions] of filteredResources) {
-      await Permission.update( permissions ,
-       { where: { resource_id: id , role_id: role.id } })
+      await Permission.update(permissions, {
+        where: { resource_id: id, role_id: role.id },
+      });
     }
     res.json(role);
   } catch (error) {
@@ -70,7 +71,7 @@ const updateRole = async (req, res) => {
 const deleteRole = async (req, res) => {
   try {
     const { id } = req.params;
-    const role = await Role.findByPk(id)
+    const role = await Role.findByPk(id);
     if (!role) {
       return res.status(404).json({ message: "Role not found" });
     }
@@ -114,8 +115,6 @@ const getRoleById = async (req, res) => {
       return res.status(404).json({ message: "Role not found" });
     }
 
-   
-
     let resources = role.resources.map((resource) => {
       let permissions = [];
 
@@ -148,13 +147,11 @@ const getRoleById = async (req, res) => {
       resources: resources,
     };
 
-
-    res.json({data:data});
+    res.json({ data: data });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const getResourcesData = async (req, res) => {
   try {
@@ -162,43 +159,22 @@ const getResourcesData = async (req, res) => {
       attributes: ["id", "key"],
       include: [
         {
-          model: Role,
-          as: "roles",
-          through: {
-            model: Permission,
-            attributes: ["permissions"],
-          },
+          model: Permission,
+          as: "permissions",
+          attributes: ["permissions"],
         },
       ],
     });
 
-    const formattedResources = resources.map((resource) => {
-      const permissionsSet = new Set(); // no repeated
+    const formattedResources = resources.map((resource) => ({
+      id: resource.id,
+      key: resource.key,
+      permissions:
+        resource.permissions?.map((p) => JSON.parse(p.permissions)).flat() ||
+        [],
+    }));
 
-      resource.roles.forEach((role) => {
-        if (role.Permission && role.Permission.permissions) {
-          let perms = role.Permission.permissions;
-
-          if (typeof perms === "string") {
-            try {
-              perms = JSON.parse(perms); //to arr
-            } catch (error) {
-              perms = [];
-            }
-          }
-
-          if (Array.isArray(perms)) {
-            perms.forEach((perm) => permissionsSet.add(perm));
-          }
-        }
-      });
-
-      return {
-        id: resource.id,
-        key: resource.key,
-        permissions: [...permissionsSet],
-      };
-    });
+    console.log(formattedResources);
 
     res.json({ resources: formattedResources });
   } catch (error) {

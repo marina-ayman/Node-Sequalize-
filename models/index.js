@@ -25,6 +25,17 @@ Role.belongsToMany(Resource, { through: Permission, foreignKey: "role_id" , othe
 Resource.belongsToMany(Role, { through: Permission, foreignKey: "resource_id", otherKey: 'role_id',
   as: 'roles'  });
 
+
+Resource.hasMany(Permission, { 
+  foreignKey: "resource_id", 
+  as: "permissions" 
+});
+
+Permission.belongsTo(Resource, { 
+  foreignKey: "resource_id", 
+  as: "resource" 
+});
+
 Role.belongsToMany(Role, { through: RoleParent, as: "Children", foreignKey: "role_id", otherKey: "parent_id" });
 Role.belongsToMany(Role, { through: RoleParent, as: "Parents", foreignKey: "parent_id", otherKey: "role_id" });
 

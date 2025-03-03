@@ -12,7 +12,7 @@ router.delete('/roles/:id', passport.authenticate('jwt', { session: false }),aut
   deleteRole)   
 router.get('/roles', passport.authenticate('jwt', { session: false }),  authorize(['view_roles']),
   getAllRoles)   
-router.get('/roles/:id', passport.authenticate('jwt', { session: false }), authorize(['view_role']),
+router.get('/roles/:id', passport.authenticate('jwt', { session: false }),
   getRoleById)   
 
   router.get('/getRoleData', passport.authenticate('jwt', { session: false }),
