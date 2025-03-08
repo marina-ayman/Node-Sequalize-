@@ -11,7 +11,7 @@ router.patch('/roles/:id', adminPassport.authenticate('jwt', { session: false })
  updateRole)   
 router.delete('/roles/:id', adminPassport.authenticate('jwt', { session: false }),authorize(['delete_role']),
   deleteRole)   
-router.get('/roles', adminPassport.authenticate('jwt', { session: false }),  authorize(['view_roles']),
+router.get('/roles', adminPassport.authenticate('jwt', { session: false }),
   getAllRoles)   
 router.get('/roles/:id', adminPassport.authenticate('jwt', { session: false }),
   getRoleById)   
