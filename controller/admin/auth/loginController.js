@@ -104,7 +104,6 @@ const refreshAdminToken = async (req, res, next) => {
   if (!storedToken) {
     throw new CustomError("Invalid admin refresh token", 406)
   }
-  console.log('--------------------',storedToken) 
 
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET);

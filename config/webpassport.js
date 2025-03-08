@@ -8,10 +8,8 @@ const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.SECRET_KEY,
 };
-console.log('----------------------------')
 passport.use(
   new JwtStrategy(opts, async (jwt_payload, done) => {
-    console.log("🔹 JWT Payload:", jwt_payload);
 
     try {
       const user = await WebUser.findByPk(jwt_payload.user.id);

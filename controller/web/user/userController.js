@@ -11,7 +11,6 @@ const profile = async (req, res, next) => {
         exclude: ["password"]
       },
     });   
-    console.log('------------------------profile', profile)
     return res.status(200).json({ profile });
   } catch (err) {
     next(err)
@@ -40,7 +39,6 @@ const updateUser = async (req, res, next) => {
         userUpdate,{
           where: { id: user.id },
         })
-      console.log('_______________________')
 
       return res
         .status(200)

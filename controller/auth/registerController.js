@@ -10,7 +10,6 @@ const registerUser = async (req, res, next) => {
       throw new CustomError("User already exists", 402)
       }
      const newUser = await WebUser.create({firstName, lastName, email, password, age })   
-     console.log('__________________________________________', newUser)
 
      res.status(201).json({
         message: "User registered successfully",

@@ -1,6 +1,6 @@
 const { ExtractJwt, Strategy: JwtStrategy } = require('passport-jwt');
 const User = require("../models/User");
-const passport = require("passport");
+// const passport = require("passport");
 
 // ExtractJwt -> generate token
 // JwtStrategy -> verify token
@@ -14,9 +14,19 @@ const opts = {
   new JwtStrategy(opts, async (jwt_payload, done) => {  // error
 
     try {   
-      const user = await User.findByPk(jwt_payload.user.id);
+      const userExists = await User.findByPk(jwt_payload.user.id);
+      const user = {
+        id: userExists.id,
+        firstName: userExists.firstName,
+        lastName: userExists.lastName,
+        email: userExists.email,
+        age: userExists.age,
+        isAdmin: userExists.isAdmin,
+        role_id: userExists.role_id,
+        permissions: jwt_payload.user.permissions,
+      }
       if (user) {
-        return done(null, jwt_payload.user);
+        return done(null, user);
       }
       return done(null, false);
     } catch (err) {

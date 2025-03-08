@@ -2,7 +2,6 @@ const express= require('express')
 const webPassport = require('passport');
 require('../config/webpassport.js')(webPassport);  
 const router= express.Router()
-const authUser = require("../middlewares/authUser.js");
 const { registerUser }= require('../controller/auth/registerController.js') 
 const { loginUser, refreshUserToken }= require('../controller/auth/loginController.js') 
 const validateRequest = require('./../middlewares/validateRequest.js')

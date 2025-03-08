@@ -28,8 +28,6 @@ const createRole = async (req, res) => {
       });
     }
 
-    console.log("______________________________________", req.body);
-
     // const resources = await resources.create({ key, value });
 
    return res.status(201).json({role , message: "Role Created Successfully"});
@@ -182,7 +180,7 @@ const getResourcesData = async (req, res) => {
       };
     });
 
-    console.log(formattedResources);
+    // console.log(formattedResources);
 
    return res.json({ resources: formattedResources });
   } catch (error) {

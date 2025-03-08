@@ -23,33 +23,18 @@ app.get('/', (req, res) => {
   res.send('Express!')
 })
 
-// app.use(passport.initialize());
 // require('./config/passport-apikey')(passport);
 // require('./config/passport-facebook')(passport);
 // require('./config/passport-google')(passport);
 // require('./config/webpassport.js')(passport);
 const passport = require('passport');
-const adminPassport = require('passport')
-const webPassport = require('passport')
 
-require('./config/passport.js')(adminPassport);
-require('./config/webpassport.js')(webPassport);
+app.use(passport.initialize());
 
-app.use((req,res , next)=>{
-  console.log('mmmmmm',req.originalUrlrs)
-  next()
-}) 
 
 app.use("/web", webRouter)
 app.use("/admin", adminRouter)
 app.use("/acl", aclRouter)
-
-
-// sequelize.sync({ alter: true }) 
-//   .then(() => {
-//     console.log('Database & tables created!');
-//   })
-//   .catch(err => console.error('Error syncing database:', err));
 
 // Global Error Handler
 app.use(errorHandler)

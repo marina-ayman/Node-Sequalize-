@@ -4,6 +4,7 @@ const authorize = (requiredPermissions) => {
   return (req, res, next) => {
 
     if (!req.user || !req.user.permissions) {
+      console.log('-------&&&&&&&&&&&----mmmmm---------------', req.user)
       return res.status(403).json({ message: 'Forbidden: No permissions found' });
     }
  
