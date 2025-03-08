@@ -2,6 +2,8 @@ const User = require("../../models/User");
 const Todo = require("../../models/Todo");
 const sequelize = require("../../config/database");
 const CustomError = require('../../handler/customError')
+const { Op } = require("sequelize");
+
 
 
 const getAllUsers = async (req, res, next) => {
@@ -25,7 +27,9 @@ const getAllTodos = async (req, res, next) => {
       }
     })
     const allTodos = await Todo.findAll(
-        {
+        {  where: {
+          webUserId: { [Op.eq]: null }  
+        },
       attributes: {
         include: [
           [

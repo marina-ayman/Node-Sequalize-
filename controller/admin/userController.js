@@ -58,7 +58,9 @@ const updateUser = async (req, res, next) => {
       age: age,
       role_id: role_id,
     }
-      const updatedUser = await user.update(userUpdate);
+      const updatedUser = await user.update(userUpdate,{
+        where: { id: user.id },
+      });
      return res
         .status(200)
         .json({ message: "user was edited successfully ", user: updatedUser });

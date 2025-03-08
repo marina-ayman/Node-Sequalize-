@@ -72,8 +72,17 @@ Todo.init(
     },
     userId: {
       type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
       references: {
         model: 'Users', 
+        key: 'id'
+      }
+    },
+    webUserId: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+      references: {
+        model: 'WebUser', 
         key: 'id'
       }
     },

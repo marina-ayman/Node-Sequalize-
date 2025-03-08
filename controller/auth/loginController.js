@@ -2,31 +2,32 @@ const jwt = require("jsonwebtoken");
 // const User = require("../../models/User")
 const CustomError = require("../../handler/customError");
 require("dotenv").config();
-const { User, RefreshToken } = require("../../models");
+const { RefreshToken } = require("../../models");
+const WebUser= require('../../models/WebUser')
 
 const generateTokens = async (user) => {
   const accessToken = jwt.sign({ user }, process.env.SECRET_KEY, {
     expiresIn: "30m",
   });
 
-  // const refreshToken = jwt.sign(
-  //   { id: user.id },
-  //   process.env.REFRESH_SECRET,
-  //   { expiresIn: "50m" }
-  // );
-  const refreshToken = btoa(Math.random().toString())
-    .substring(2)
-    .repeat(48)
-    .substring(0, 96);
+  const refreshToken = jwt.sign(
+    { id: user.id },
+    process.env.REFRESH_SECRET,
+    { expiresIn: "50m" }
+  );
+  // const refreshToken = btoa(Math.random().toString())
+  //   .substring(2)
+  //   .repeat(48)
+  //   .substring(0, 96);
 
   await RefreshToken.create({
     token: refreshToken,
-    userId: user.id,
+    webUserId: user.id,
     expiresAt: new Date(Date.now() + 5 * 60 * 1000),
     // 7 * 24 * 60 * 60 * 1000
   });
 
-  return { accessToken, refreshToken };
+  return { accessToken , refreshToken};
 };
 
 const loginUser = async (req, res, next) => {
@@ -35,7 +36,8 @@ const loginUser = async (req, res, next) => {
     if (!email || !password) {
       throw new CustomError("All fields are required!", 400);
     }
-    const userExists = await User.findOne({ where: { email } });
+
+    const userExists = await WebUser.findOne({ where: { email: email} });
     if (!userExists) {
       // const error = new Error("go to Sign IN")
       // error.statusCode = 401;
@@ -65,9 +67,9 @@ const refreshUserToken = async (req, res) => {
   if (!refreshToken) {
     throw new CustomError("Refresh token is required", 403);
   }
-  const storedToken = await RefreshToken.findOne({
+  const storedToken = await RefreshToken.findAll({
     where: { token: refreshToken },
-  });
+  })
   if (!storedToken) {
     throw new CustomError("Invalid refresh token", 403);
   }
@@ -75,17 +77,17 @@ const refreshUserToken = async (req, res) => {
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
 
-    const user = await User.findByPk(decoded.id);
+    const user = await WebUser.findByPk(decoded.id);
 
-    if (!user) {
+    if (!user) { 
       return res.status(403).json({ message: "User not found" });
     }
     const newTokens = await generateTokens(user);
 
     await RefreshToken.destroy({ where: { token: refreshToken } });
     await RefreshToken.create({
-      token: newTokens.refreshToken,
-      userId: user.id,
+      token: newTokens.refreshToken, 
+      webUserId: user.id,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 

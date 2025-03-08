@@ -38,7 +38,7 @@ const createRole = async (req, res) => {
   }
 };
 
-const updateRole = async (req, res) => {
+const updateRole = async (req, res, next) => { 
   try {
     const { id } = req.params;
     const { key, value } = req.body.role;
@@ -51,7 +51,7 @@ const updateRole = async (req, res) => {
       value: value,
     };
     await Role.update(roleUpdate, {
-      where: { id: paramId },
+      where: { id: id },
     });
     const resources = req.body.resources;
     const filteredResources = Object.entries(resources).filter(
@@ -65,7 +65,7 @@ const updateRole = async (req, res) => {
     }
    return res.status(201).json({role , message: "Role updated Successfully"});
   } catch (error) {
-    throw new CustomError( error.message, 403)
+    next(error)
   }
 };
 
@@ -168,13 +168,19 @@ const getResourcesData = async (req, res) => {
       ],
     });
 
-    const formattedResources = resources.map((resource) => ({
-      id: resource.id,
-      key: resource.key,
-      permissions:
-        resource.permissions?.map((p) => JSON.parse(p.permissions)).flat() ||
-        [],
-    }));
+    const formattedResources = resources.map((resource) => {
+      const permissions = resource.permissions
+        ?.map((p) => JSON.parse(p.permissions))
+        .flat();
+
+      const uniquePermissions = [...new Set(permissions)];
+
+      return {
+        id: resource.id,
+        key: resource.key,
+        permissions: uniquePermissions || [],
+      };
+    });
 
     console.log(formattedResources);
 

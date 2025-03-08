@@ -8,7 +8,7 @@ const getTodos = async (req, res, next) => {
     const loginId = req.user.id;
     const todos = await Todo.findAll(
       {
-      where: { userId: loginId },
+      where: { webUserId: loginId },
       attributes: {
         include: [
           [
@@ -46,7 +46,7 @@ const addTodo = async (req, res, next) => {
       status,
       fromDate,
       toDate,
-      userId: loginId,
+      webUserId: loginId,
       createdBy: loginId
     };
 
@@ -78,9 +78,9 @@ const updateTodo = async (req, res, next) => {
       status: status,
       fromDate: fromDate,
       toDate: toDate,
-      updatedBy: loginId
+      updatedBy: loginId, 
     };
-    if (todo.userId  === loginId ) {
+    if (todo.webUserId  === loginId ) {
       const [updatedTodo] = await Todo.update(todoNew, {
         where: { id: paramId } 
       });
@@ -107,7 +107,7 @@ const deleteTodo = async (req, res, next) => {
     if (!loginId) {
       throw new CustomError("unathenticated", 404)
     }
-    if (todo.userId  === loginId ) {
+    if (todo.webUserId  === loginId ) {
       await todo.destroy();
       return res.status(200).json({ message: "Deleted Sucessfuly" });
     } else {

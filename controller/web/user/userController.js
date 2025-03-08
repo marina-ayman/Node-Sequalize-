@@ -1,26 +1,27 @@
 const express = require("express");
-const User = require("../../../models/User");
+const WebUser = require("../../../models/WebUser");
 const Todo = require("../../../models/Todo");
 const sequelize = require("../../../config/database");
 const CustomError = require('../../../handler/customError')
 
 const profile = async (req, res, next) => {
   try {
-    const profile = await User.findByPk(req.user.id, {
+    const profile = await WebUser.findByPk(req.user.id, {
       attributes: {
         exclude: ["password"]
       },
     });   
+    console.log('------------------------profile', profile)
     return res.status(200).json({ profile });
   } catch (err) {
     next(err)
-  }
+  } 
 };
 const updateUser = async (req, res, next) => {
   try {
     const id = req.params.id;
     const loginId = req.user.id;
-    const user = await User.findByPk(id);
+    const user = await WebUser.findByPk(id);
     if (!user) {
       throw new CustomError("User not found", 404)
     }
@@ -33,9 +34,15 @@ const updateUser = async (req, res, next) => {
       password: password,
       age: age,
     };
+
     if (user.id  === loginId ) {
-      const updatedUser = await user.update(userUpdate);
-      res
+      const updatedUser = await WebUser.update(
+        userUpdate,{
+          where: { id: user.id },
+        })
+      console.log('_______________________')
+
+      return res
         .status(200)
         .json({ message: "user was edited successfully ", user: updatedUser });
     } else {
@@ -44,6 +51,7 @@ const updateUser = async (req, res, next) => {
 
   } catch (err) {
     next(err)
+
   }
 };
 
@@ -51,7 +59,7 @@ const deleteUser = async (req, res, next) => {
   try {
     const paramId = req.params.id;
     const loginId = req.user.id;
-    const user = await User.findByPk(paramId);
+    const user = await WebUser.findByPk(paramId);
     if (!user) {
       throw new CustomError("user not found", 404)
     }
@@ -59,7 +67,7 @@ const deleteUser = async (req, res, next) => {
 
       await Todo.destroy({ where: { userId: loginId } });
 
-      await user.destroy();
+      await WebUser.destroy();
       return res.status(200).json({ message: "delete Sucessfuly" });
     } else {
       throw new CustomError("you can`t delete it", 404)

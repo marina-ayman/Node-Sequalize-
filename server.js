@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 require("dotenv").config()
-const passport = require('passport')
 const sequelize = require("./config/database")
 const { sequelizeModels } = require('./models');
 // require("./seeders/insertUser.js")
@@ -24,15 +23,17 @@ app.get('/', (req, res) => {
   res.send('Express!')
 })
 
-require('./config/passport')(passport);
+// app.use(passport.initialize());
 // require('./config/passport-apikey')(passport);
 // require('./config/passport-facebook')(passport);
 // require('./config/passport-google')(passport);
+// require('./config/webpassport.js')(passport);
+const passport = require('passport');
+const adminPassport = require('passport')
+const webPassport = require('passport')
 
-
-
-
-app.use(passport.initialize())
+require('./config/passport.js')(adminPassport);
+require('./config/webpassport.js')(webPassport);
 
 app.use((req,res , next)=>{
   console.log('mmmmmm',req.originalUrlrs)

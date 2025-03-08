@@ -8,12 +8,17 @@ const Resource = require("./Resource");
 const Permission = require("./Permission");
 const RoleParent = require("./RoleParent");
 const RefreshToken = require("./RefreshToken");
+const WebUser = require("./WebUser")
 
 User.hasMany(Todo, { foreignKey: "userId", as: "Tasks" });
 Todo.belongsTo(User, { foreignKey: "userId", as: "User" });
 
 User.hasMany(Todo, { foreignKey: "createdBy", as: "CreatedTasks" });
 Todo.belongsTo(User, { foreignKey: "createdBy", as: "CreatedByUser" });
+
+WebUser.hasMany(Todo, { foreignKey: "userId", as: "webTasks" });
+Todo.belongsTo(WebUser, { foreignKey: "userId", as: "webUser" });
+
 
 User.hasMany(RefreshToken, { foreignKey: "userId" });
 RefreshToken.belongsTo(User, { foreignKey: "userId" });

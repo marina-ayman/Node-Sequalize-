@@ -10,12 +10,12 @@ const generateTokens = async (user) => {
     { expiresIn: "30m" } 
   );
 
-  // const refreshToken = jwt.sign(
-  //   { id: user.id },
-  //   process.env.REFRESH_SECRET,
-  //   { expiresIn: "50m" } 
-  // );
-  const refreshToken = btoa(Math.random().toString()).substring(2).repeat(48).substring(0, 96);
+  const refreshToken = jwt.sign(
+    { id: user.id },
+    process.env.REFRESH_SECRET,
+    { expiresIn: "50m" } 
+  );
+  // const refreshToken = btoa(Math.random().toString()).substring(2).repeat(48).substring(0, 96);
 
   await RefreshToken.create({
     token: refreshToken,
@@ -94,16 +94,18 @@ const loginUser = async (req, res, next) => {
 }
 }
 
-const refreshAdminToken = async (req, res) => {
-  const { refreshToken } = req.body;
+const refreshAdminToken = async (req, res, next) => {
+  const { refreshToken } = req.body; 
   if (!refreshToken) {
     throw new CustomError("Admin refresh token is required", 403)
   }
-  const storedToken = await RefreshToken.findOne({ where: { token: refreshToken } });
+ 
+  const storedToken = await RefreshToken.findAll({ where: { token: refreshToken } });
   if (!storedToken) {
-    throw new CustomError("Invalid admin refresh token", 403)
-
+    throw new CustomError("Invalid admin refresh token", 406)
   }
+  console.log('--------------------',storedToken) 
+
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
     const user = await User.findByPk(decoded.id);
@@ -111,7 +113,7 @@ const refreshAdminToken = async (req, res) => {
       throw new CustomError("Admin user not found", 403)
     }
     const newTokens = await generateTokens(user);
-      await RefreshToken.destroy({ where: { token: refreshToken } });
+      await RefreshToken.destroy({ where: { token: refreshToken , userId: user.id} });
       await RefreshToken.create({
         token: newTokens.refreshToken,
         userId: user.id,
@@ -120,7 +122,8 @@ const refreshAdminToken = async (req, res) => {
 
    return res.json(newTokens);
   } catch (error) {
-    throw new CustomError("Invalid admin refresh token", 403)
+    // throw new CustomError("Invalid admin refresh token", 403)
+    next(error)
   }
 };
 

@@ -13,9 +13,19 @@ RefreshToken.init({
       },
       userId: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "users", 
+          key: "id", 
+        },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      },
+      webUserId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true,
+        references: {
+          model: "web_users", 
           key: "id", 
         },
         onDelete: "CASCADE",
