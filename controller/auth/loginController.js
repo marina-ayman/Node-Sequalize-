@@ -6,7 +6,7 @@ const { RefreshToken } = require("../../models");
 const WebUser= require('../../models/WebUser')
 
 const generateTokens = async (user) => {
-  const accessToken = jwt.sign({ user }, process.env.SECRET_KEY, {
+  const accessToken = jwt.sign({ user }, process.env.Web_SECRET_KEY, {
     expiresIn: "30m",
   });
 
@@ -48,7 +48,7 @@ const loginUser = async (req, res, next) => {
     if (!isMatch) {
       throw new CustomError("Wrong Email or Password", 401);
     }
-    // const token = jwt.sign(userExists.get({ plain: true }), process.env.SECRET_KEY , { expiresIn: '48h' });
+    // const token = jwt.sign(userExists.get({ plain: true }), process.env.Web_SECRET_KEY , { expiresIn: '48h' });
 
     const token = await generateTokens(userExists);
 

@@ -15,33 +15,33 @@ router.post('/login', loginUser)
 router.post("/admin-refresh-token", refreshAdminToken)
 
 // user
-//  adminPassport.authenticate('jwt', { session: false })
-router.post('/user', adminPassport.authenticate('jwt', { session: false }), authorize(["create_user"]),  addUser)
-router.get('/profile', adminPassport.authenticate('jwt', { session: false }), profile)
-router.delete('/user/:id', adminPassport.authenticate('jwt', { session: false }), authorize(["delete_user"]),  deleteUser)
-router.patch('/user/:id', adminPassport.authenticate('jwt', { session: false }), authorize(["update_user"]),  validateRequest(userSchema), updateUser)
+//  adminPassport.authenticate('UserJwt', { session: false })
+router.post('/user', adminPassport.authenticate('UserJwt', { session: false }), authorize(["create_user"]),  addUser)
+router.get('/profile', adminPassport.authenticate('UserJwt', { session: false }), profile)
+router.delete('/user/:id', adminPassport.authenticate('UserJwt', { session: false }), authorize(["delete_user"]),  deleteUser)
+router.patch('/user/:id', adminPassport.authenticate('UserJwt', { session: false }), authorize(["update_user"]),  validateRequest(userSchema), updateUser)
 
 // todo
-router.get('/get_all_users', adminPassport.authenticate('jwt', { session: false }), 
+router.get('/get_all_users', adminPassport.authenticate('UserJwt', { session: false }), 
 getAllUsers)
-router.get('/get_all_todos', adminPassport.authenticate('jwt', { session: false }), authorize(["view_todos"]), 
+router.get('/get_all_todos', adminPassport.authenticate('UserJwt', { session: false }), authorize(["view_todos"]), 
 getAllTodos)
-router.get('/get_user_todos/:id', adminPassport.authenticate('jwt', { session: false }),
+router.get('/get_user_todos/:id', adminPassport.authenticate('UserJwt', { session: false }),
 authorize(["view_user_todos"]),
  getUserTodos)
 
 
 router.post('/todo',
-  adminPassport.authenticate('jwt', { session: false }),
+  adminPassport.authenticate('UserJwt', { session: false }),
   authorize(["create_todo"]),
   validateRequest(todoSchema),
   addTodo)
 
 
-router.delete('/todo/:id', adminPassport.authenticate('jwt', { session: false }),
+router.delete('/todo/:id', adminPassport.authenticate('UserJwt', { session: false }),
 authorize(["delete_todo"]),
  deleteTodo)
-router.patch('/todo/:id',adminPassport.authenticate('jwt', { session: false }),
+router.patch('/todo/:id',adminPassport.authenticate('UserJwt', { session: false }),
   authorize(["update_todo"]), 
   validateRequest(todoSchema), updateTodo)
 
@@ -80,5 +80,6 @@ router.patch('/todo/:id',adminPassport.authenticate('jwt', { session: false }),
 //     res.redirect("/dashboard");
 //   }
 // );
+
 
 module.exports = router;

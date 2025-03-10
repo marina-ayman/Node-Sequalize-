@@ -3,14 +3,17 @@ const WebUser = require("../../../models/WebUser");
 const Todo = require("../../../models/Todo");
 const sequelize = require("../../../config/database");
 const CustomError = require('../../../handler/customError')
+const bcrypt = require("bcrypt")
 
 const profile = async (req, res, next) => {
   try {
+    console.log('>>>>>>>>>>>>>>>>>>>>', req.user)
     const profile = await WebUser.findByPk(req.user.id, {
       attributes: {
         exclude: ["password"]
       },
     });   
+
     return res.status(200).json({ profile });
   } catch (err) {
     next(err)
@@ -30,7 +33,7 @@ const updateUser = async (req, res, next) => {
       firstName: firstName,
       lastName: lastName,
       email: email,
-      password: password,
+      password: await bcrypt.hash(password, 10),
       age: age,
     };
 

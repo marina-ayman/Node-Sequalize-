@@ -6,10 +6,13 @@ const WebUser = require("../models/WebUser")
 module.exports = function (passport)  {
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.SECRET_KEY,
+  secretOrKey: process.env.Web_SECRET_KEY,
 };
-passport.use(
+console.log('--------------------')
+
+passport.use('webUserJwt',
   new JwtStrategy(opts, async (jwt_payload, done) => {
+    console.log('--------------------nnn')
 
     try {
       const user = await WebUser.findByPk(jwt_payload.user.id);

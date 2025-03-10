@@ -42,8 +42,9 @@ const updateRole = async (req, res, next) => {
     const { key, value } = req.body.role;
     const role = await Role.findByPk(id);
     if (!role) {
-      throw new CustomError("Role not found", 403)
+      throw new CustomError("Role not found", 403);
     }
+
     const roleUpdate = {
       key: key,
       value: value,
@@ -51,19 +52,27 @@ const updateRole = async (req, res, next) => {
     await Role.update(roleUpdate, {
       where: { id: id },
     });
+
     const resources = req.body.resources;
     const filteredResources = Object.entries(resources).filter(
       ([id, permissions]) => permissions.length > 0
     );
 
+    await Permission.destroy({
+      where: { role_id: role.id },
+    });
+
     for (const [id, permissions] of filteredResources) {
-      await Permission.update(permissions, {
-        where: { resource_id: id, role_id: role.id },
+      await Permission.create({
+        resource_id: id,
+        permissions,
+        role_id: role.id,
       });
     }
-   return res.status(201).json({role , message: "Role updated Successfully"});
+
+    return res.status(201).json({ role, message: "Role updated Successfully" });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 

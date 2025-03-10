@@ -10,7 +10,7 @@ const opts = {
   secretOrKey: process.env.SECRET_KEY,
 };
 // jwtFromRequest -> how & when extract token
-  passport.use(
+  passport.use('UserJwt',
   new JwtStrategy(opts, async (jwt_payload, done) => {  // error
 
     try {   

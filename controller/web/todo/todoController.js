@@ -1,7 +1,8 @@
 const express = require("express");
 const Todo = require("../../../models/Todo");
 const sequelize = require("../../../config/database");
-const CustomError = require('../../../handler/customError')
+const CustomError = require('../../../handler/customError');
+const WebUser = require("../../../models/WebUser");
 
 const getTodos = async (req, res, next) => {
   try {
@@ -20,8 +21,12 @@ const getTodos = async (req, res, next) => {
             "formattedToDate",
           ],
         ],
+        
         exclude:['toDate','fromDate']
       },
+      include: [
+        { model: WebUser, as: 'webUser', attributes: ['id', 'email'] },
+      ],
     }
   );
   

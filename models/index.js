@@ -17,7 +17,7 @@ User.hasMany(Todo, { foreignKey: "createdBy", as: "CreatedTasks" });
 Todo.belongsTo(User, { foreignKey: "createdBy", as: "CreatedByUser" });
 
 WebUser.hasMany(Todo, { foreignKey: "userId", as: "webTasks" });
-Todo.belongsTo(WebUser, { foreignKey: "userId", as: "webUser" });
+Todo.belongsTo(WebUser, { foreignKey: "webUserId", as: "webUser" });
 
 
 User.hasMany(RefreshToken, { foreignKey: "userId" });
