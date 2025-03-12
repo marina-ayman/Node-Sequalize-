@@ -7,13 +7,13 @@ const generateTokens = async (user) => {
   const accessToken = jwt.sign(
     { user },
     process.env.SECRET_KEY,
-    { expiresIn: "30m" } 
+    { expiresIn: "4m" } 
   );
 
   const refreshToken = jwt.sign(
     { id: user.id },
     process.env.REFRESH_SECRET,
-    { expiresIn: "50m" } 
+    { expiresIn: "2m" } 
   );
   // const refreshToken = btoa(Math.random().toString()).substring(2).repeat(48).substring(0, 96);
 

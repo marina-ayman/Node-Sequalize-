@@ -31,3 +31,7 @@
 
 
 # npx sequelize migration:generate --name add-parent-id-to-acl-resources
+
+
+
+# npm install express sequelize mysql2 dotenv
